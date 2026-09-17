@@ -1,10 +1,10 @@
-# 🔍 Infollion Log Reading Assignment
+# Infollion Log Reading Assignment
 
 > **Production Incident Investigation** — Identifying why user orders silently vanished using only raw log files.
 
 ---
 
-## 📋 Assignment Overview
+## Assignment Overview
 
 Given two production log files captured over the same 24-hour window:
 
@@ -17,7 +17,7 @@ Given two production log files captured over the same 24-hour window:
 
 ---
 
-## 🚨 Incident Summary
+## Incident Summary
 
 | | Detail |
 |-|--------|
@@ -26,11 +26,11 @@ Given two production log files captured over the same 24-hour window:
 | **Root Cause** | Upstream service at `10.0.3.44:8443` went down (`ECONNRESET`) |
 | **Total Failures** | 2,385 checkout jobs silently failed |
 | **Users Affected** | **2,335 distinct users** |
-| **Recovery** | ❌ Never recovered within the log window (through 23:59) |
+| **Recovery** | Never recovered within the log window (through 23:59) |
 
 ---
 
-## ❓ Questions & Answers
+## Questions & Answers
 
 ### Q1 — When did the problem start?
 
@@ -73,9 +73,9 @@ Every one of the 2,385 failures shares an **identical** worker error:
 upstream call failed err=ECONNRESET upstream=10.0.3.44:8443 (retries exhausted)
 ```
 
-- ✅ Same error type (`ECONNRESET`) — 2,385/2,385
-- ✅ Same upstream (`10.0.3.44:8443`) — 2,385/2,385 — **only upstream in the entire log**
-- ✅ All said `(retries exhausted)` — 2,385/2,385
+- Same error type (`ECONNRESET`) — 2,385/2,385
+- Same upstream (`10.0.3.44:8443`) — 2,385/2,385 — **only upstream in the entire log**
+- All said `(retries exhausted)` — 2,385/2,385
 
 **The web tier was completely blind to this.** All failing checkouts returned `HTTP 202` with normal latency (~71ms), so users thought their order succeeded.
 
@@ -103,7 +103,7 @@ upstream call failed err=ECONNRESET upstream=10.0.3.44:8443 (retries exhausted)
 
 ---
 
-### 🎯 Bonus — Root Cause
+### Bonus — Root Cause
 
 The internal service at **`10.0.3.44:8443`** crashed or went offline at ~14:32 and was **never restored** during the observation window.
 
@@ -114,7 +114,7 @@ The internal service at **`10.0.3.44:8443`** crashed or went offline at ~14:32 a
 
 ---
 
-## 🛠️ Investigation Process
+## Investigation Process
 
 - **Examined log structure** — understood that `request_id` is the join key between the two log files
 - **Parsed and counted** all endpoints; initially focused on `/orders` (mentioned in the problem), found zero worker failures there
@@ -128,7 +128,7 @@ The internal service at **`10.0.3.44:8443`** crashed or went offline at ~14:32 a
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 .
@@ -139,11 +139,11 @@ The internal service at **`10.0.3.44:8443`** crashed or went offline at ~14:32 a
 └── README.md         # This file
 ```
 
-> ⚠️ Log files (`web.log`, `worker.log`) are not included per assignment instructions.
+> Note: Log files (`web.log`, `worker.log`) are not included per assignment instructions.
 
 ---
 
-## 🚀 Running the Analysis
+## Running the Analysis
 
 ```bash
 # Run full analysis
@@ -158,5 +158,3 @@ python3 verify.py
 ---
 
 *Submitted for Infollion Assignment — Delhi Technological University*
-# infollion-assingment-01 git init git add README.md git commit -m first commit git branch -M main git remote add origin https://github.com/itsalam149/infollion-assingment-01.git git push -u origin main
-# infollion-assingment-01
